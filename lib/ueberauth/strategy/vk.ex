@@ -55,6 +55,11 @@ defmodule Ueberauth.Strategy.VK do
     end
   end
 
+  def handle_callback!(%Plug.Conn{params: %{"token" => token}} = conn) do
+    client = OAuth.client(token: token)
+    fetch_user(conn, client)
+  end
+
   @doc false
   def handle_callback!(conn) do
     set_errors!(conn, [error("missing_code", "No code received")])
