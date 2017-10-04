@@ -156,7 +156,7 @@ defmodule Ueberauth.Strategy.VK do
     path = user_query(conn)
 
     case Client.get(client, path) do
-      {:ok, %Response{status_code: 401, body: _body}} ->
+      {:error, %Response{status_code: 401, body: _body}} ->
         set_errors!(conn, [error("token", "unauthorized")])
       {:ok, %Response{status_code: status_code, body: user}}
         when status_code in 200..399 ->
