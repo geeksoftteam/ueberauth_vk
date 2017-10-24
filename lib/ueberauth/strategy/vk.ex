@@ -44,7 +44,7 @@ defmodule Ueberauth.Strategy.VK do
   Handles the callback from VK.
   """
   def handle_callback!(%Plug.Conn{params: %{"code" => code}} = conn) do
-    config = Ueberauth.Config.get(conn, Ueberauth.Strategy.Facebook.OAuth)
+    config = Ueberauth.Config.get(conn, OAuth)
     opts = Keyword.merge(config, [redirect_uri: callback_url(conn)])
     client = OAuth.get_token!([code: code], opts)
     token = client.token
@@ -59,7 +59,7 @@ defmodule Ueberauth.Strategy.VK do
   end
 
   def handle_callback!(%Plug.Conn{params: %{"token" => token}} = conn) do
-    config = Ueberauth.Config.get(conn, Ueberauth.Strategy.Facebook.OAuth)
+    config = Ueberauth.Config.get(conn, OAuth)
     client = OAuth.client(Keyword.merge(config, token: token))
     fetch_user(conn, client)
   end
