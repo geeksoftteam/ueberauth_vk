@@ -42,7 +42,7 @@ defmodule UeberauthVK.Mixfile do
   defp deps do
    [
      # Auth:
-     {:ueberauth, "~> 0.2"},
+     {:ueberauth, github: "geeksoftteam/ueberauth"},
      {:oauth2, "~> 0.8"},
 
      # Tests:

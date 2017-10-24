@@ -25,6 +25,8 @@ defmodule Ueberauth.Strategy.VK do
       |> option(:allowed_request_params)
       |> Enum.map(&to_string/1)
 
+    config = Ueberauth.Config.get(conn, OAuth)
+
     authorize_url =
       conn.params
       |> maybe_replace_param(conn, "auth_type", :auth_type)
@@ -33,7 +35,7 @@ defmodule Ueberauth.Strategy.VK do
       |> Enum.filter(fn {k, _} -> Enum.member?(allowed_params, k) end)
       |> Enum.map(fn {k, v} -> {String.to_existing_atom(k), v} end)
       |> Keyword.put(:redirect_uri, callback_url(conn))
-      |> OAuth.authorize_url!
+      |> OAuth.authorize_url!(config)
 
     redirect!(conn, authorize_url)
   end
@@ -42,7 +44,8 @@ defmodule Ueberauth.Strategy.VK do
   Handles the callback from VK.
   """
   def handle_callback!(%Plug.Conn{params: %{"code" => code}} = conn) do
-    opts = [redirect_uri: callback_url(conn)]
+    config = Ueberauth.Config.get(conn, Ueberauth.Strategy.Facebook.OAuth)
+    opts = Keyword.merge(config, [redirect_uri: callback_url(conn)])
     client = OAuth.get_token!([code: code], opts)
     token = client.token
 
@@ -56,7 +59,8 @@ defmodule Ueberauth.Strategy.VK do
   end
 
   def handle_callback!(%Plug.Conn{params: %{"token" => token}} = conn) do
-    client = OAuth.client(token: token)
+    config = Ueberauth.Config.get(conn, Ueberauth.Strategy.Facebook.OAuth)
+    client = OAuth.client(Keyword.merge(config, token: token))
     fetch_user(conn, client)
   end
 

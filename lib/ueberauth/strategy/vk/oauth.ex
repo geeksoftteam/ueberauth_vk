@@ -28,11 +28,8 @@ defmodule Ueberauth.Strategy.VK.OAuth do
   of Ueberauth.
   """
   def client(opts \\ []) do
-    config = Application.get_env(:ueberauth, Ueberauth.Strategy.VK.OAuth)
-
     opts =
       @defaults
-      |> Keyword.merge(config)
       |> Keyword.merge(opts)
 
     Client.new(opts)
@@ -51,7 +48,7 @@ defmodule Ueberauth.Strategy.VK.OAuth do
   def get_token!(params \\ [], opts \\ []) do
     opts
     |> client()
-    |> put_param(:client_secret, client().client_secret)
+    |> put_param(:client_secret, client(opts).client_secret)
     |> Client.get_token!(params)
   end
 
