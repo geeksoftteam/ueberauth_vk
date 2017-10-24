@@ -1,10 +1,11 @@
 defmodule Ueberauth.Strategy.VK.OAuthTest do
   use ExUnit.Case
 
-  import Ueberauth.Strategy.VK.OAuth, only: [client: 0]
+  import Ueberauth.Strategy.VK.OAuth, only: [client: 1]
 
   setup do
-    {:ok, %{client: client()}}
+    config = Ueberauth.Config.get(%Plug.Conn{}, Ueberauth.Strategy.VK.OAuth)
+    {:ok, %{client: client(config)}}
   end
 
   test "creates correct client", %{client: client} do
